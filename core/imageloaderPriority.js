@@ -2,7 +2,6 @@
  * Created by stavr on 29-Jan-17.
  */
 
-
 $(document).ready(function () {
     console.log("ready!");
     var first = $('.ilp-first');
@@ -13,33 +12,29 @@ $(document).ready(function () {
     var secondSources = stopLoading(second);
     var thirdSources = stopLoading(third);
 
-
-    console.log(firstSources);
-    console.log(secondSources);
-    console.log(thirdSources);
-
-
     startLoading(first, firstSources);
 
-    var firstCount = 0;
-    var secondCount = 0;
-    var thirdCount = 0;
+    var counter = {
+        first: 0,
+        second: 0
+    };
 
     first.on("load", function () {
-        firstCount++;
-        if (firstCount == firstSources.length) {
-            startLoading(second, secondSources);
-        }
+        loadNext(firstSources, second, secondSources, counter , 'first')
     });
 
     second.on("load", function () {
-        secondCount++;
-        if (secondCount == secondSources.length) {
-            startLoading(third, thirdSources);
-        }
+        loadNext(secondSources, third, thirdSources, counter , 'second');
     });
 
 });
+
+function loadNext(currentSource, nextImages, nextSources, counter, item) {
+    counter[item]++;
+    if (counter[item] == currentSource.length) {
+        startLoading(nextImages, nextSources);
+    }
+}
 
 function stopLoading(images) {
     var sources = [];
@@ -51,6 +46,7 @@ function stopLoading(images) {
 }
 
 function startLoading(images, sources) {
+
     images.each(function (i) {
         $(this).attr('src', sources[i]);
     });
